@@ -25,7 +25,7 @@
     global.UAM.addCategory = function (newCategoryName) {
         // function should return new category object
 		let newCategory = {
-			categoryName = newCategoryName,
+			categoryName: newCategoryName,
 			books: []
 		};
 		
@@ -94,7 +94,7 @@
 		for(let categoryIndex = 0; categoryIndex < global.UAM.library.length; categoryIndex++){
 			currentCategoryObject = global.UAM.library[categoryIndex];
 			
-			for(let bookIndex = 0; bookIndex < currentCategoryObject.books; bookIndex++){
+			for(let bookIndex = 0; bookIndex < currentCategoryObject.books.length; bookIndex++){
 				currentBook = currentCategoryObject.books[bookIndex];
 				
 				if(currentBook.title === title){
@@ -107,8 +107,8 @@
     // bookObject: Object
     global.UAM.returnBook = function(bookObject) {
         // !!!
-		//zmniejszyć count
-		bookObject.count--;
+		//zwiększyć count
+		bookObject.count++;
     };
     
     global.UAM.getBorrowedBooks = function() {
@@ -124,12 +124,16 @@
 		for(let categoryIndex = 0; categoryIndex < global.UAM.library.length; categoryIndex++){
 			currentCategoryObject = global.UAM.library[categoryIndex];
 			
-			for(let bookIndex = 0; bookIndex < currentCategoryObject.books; bookIndex++){
+			for(let bookIndex = 0; bookIndex < currentCategoryObject.books.length; bookIndex++){
 				currentBook = currentCategoryObject.books[bookIndex];
 				
 				if(currentBook.count === 0){
 					borrowedBooks.push(currentBook);
 				}
+			}
+		}
+		
+		return borrowedBooks;
 		
     };
 
