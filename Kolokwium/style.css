@@ -10,3 +10,7 @@ h1{
 table tr:nth-child(2n) td{
     background-color: beige;
 }
+
+button:hover{
+    background-color: red;
+}
