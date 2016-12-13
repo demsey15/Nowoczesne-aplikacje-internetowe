@@ -1,8 +1,8 @@
 class Task {
     private _text: string;
-    private _isDone: boolean;
+     _isDone: boolean;
     private _html: HTMLElement;
-
+        pomoc : string;
     private checkBox: HTMLInputElement;
 
     constructor(text: string) {
@@ -16,29 +16,32 @@ class Task {
         console.log('click');
         this._isDone = true;
         console.log(this._isDone);
-        this.checkBox.setAttribute('checked', 'true');
+        this.pomoc = 'X';
     }
 
     getText(): string {
         return this._text;
     }
 
+    isDone(): boolean{
+        return this._isDone;
+    }
 
     private createHTMLElement() {
         let newElement = document.createElement('li');
         newElement.innerHTML = this._text;
 
-        let checkBox: HTMLInputElement = <HTMLInputElement> document.createElement('input');
-        checkBox.setAttribute('type', 'checkbox');
-        checkBox.addEventListener('click', this.markAsDone);
-
+        let checkBoxP: HTMLInputElement = <HTMLInputElement> document.createElement('input');
+        checkBoxP.setAttribute('type', 'checkbox');
+        checkBoxP.addEventListener('click', this.markAsDone);
+        this.checkBox = checkBoxP;
         if (this._isDone) {
             console.log('isdone');
-            checkBox.setAttribute('checked', 'true');
+            checkBoxP.setAttribute('checked', 'true');
         }
-        this.checkBox = checkBox;
+        
 
-        newElement.appendChild(checkBox);
+        newElement.appendChild(checkBoxP);
 
         let removeButton: HTMLButtonElement = <HTMLButtonElement>document.createElement('button');
         let removeFun = getRemoveTask(this);
@@ -77,14 +80,16 @@ class TaskList implements SearchTasks {
         this._tasks.push(newTask);
         
         this._element.appendChild(newTask.getHtml());
-
+        console.log('dodano zadanie: ', this._tasks)
+        
+        this.updateHtmlElement();
         return newTask;
     }
 
     removeTask(taskToRemove: Task): void {
         let i = this._tasks.indexOf(taskToRemove);
         this._tasks.splice(i, 1);
-
+        console.log('Usunieto zadanie: ', this._tasks);
         this.updateHtmlElement();
     }
 
@@ -95,11 +100,12 @@ class TaskList implements SearchTasks {
     search(query: string): Array<Task> {
         let foundTasks: Array<Task> = [];
 
-        for (let i = 0; i < this._tasks.length; i++) {
-            let task: Task = this._tasks[i];
-            
-            if (task.getText().indexOf(query) !== -1) {
-                foundTasks.push(task);
+        for (let i = 0; i < this._tasks.length; i++) { 
+            if(query == ''){
+                foundTasks.push(this._tasks[i]);
+            }
+            else if (this._tasks[i].getText().indexOf(query) !== -1) {
+                foundTasks.push(this._tasks[i]);
             }
         }
 
@@ -132,7 +138,9 @@ searchButton.addEventListener('click', search);
 
      let list = document.getElementById('tasksList');
 
-     list.removeChild(list.firstChild);
+    if(list.firstChild != undefined){
+         list.removeChild(list.firstChild);
+    }
      list.appendChild(taskList.getElement());
  }
 
@@ -155,23 +163,28 @@ searchButton.addEventListener('click', search);
      let queryInput: HTMLInputElement = <HTMLInputElement>document.getElementById('searchInput');
      let query = queryInput.value;
 
-     if (query !== '') {
+     
          let results: Array<Task> = taskList.search(query);
 
-         let resultList = document.createElement('ul');
+         let resultList = document.createElement('ol');
          console.log('Mam rezultatow:', results.length);
          for (let i = 0; i < results.length; i++) {
-             resultList.appendChild(results[i].getHtml());
+             let li = document.createElement('li');
+             console.log(results[i]._isDone, ' ', results[i].pomoc);
+            
+                li.innerHTML = results[i].getText(); 
+             
+             resultList.appendChild(li);
          }
 
-         let list = document.getElementById('tasksList');
-         list.removeChild(list.firstChild);
+         let list = document.getElementById('searchTasksList');
+         
+         if(list.firstChild != undefined){
+            list.removeChild(list.firstChild);
+         }
+
          list.appendChild(resultList);
-     } else {
-         let list = document.getElementById('tasksList');
-         list.removeChild(list.firstChild);
-         list.appendChild(taskList.getElement());
-     }
+     
  }
 
 

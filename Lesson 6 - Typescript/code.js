@@ -8,23 +8,26 @@ var Task = (function () {
         console.log('click');
         this._isDone = true;
         console.log(this._isDone);
-        this.checkBox.setAttribute('checked', 'true');
+        this.pomoc = 'X';
     };
     Task.prototype.getText = function () {
         return this._text;
     };
+    Task.prototype.isDone = function () {
+        return this._isDone;
+    };
     Task.prototype.createHTMLElement = function () {
         var newElement = document.createElement('li');
         newElement.innerHTML = this._text;
-        var checkBox = document.createElement('input');
-        checkBox.setAttribute('type', 'checkbox');
-        checkBox.addEventListener('click', this.markAsDone);
+        var checkBoxP = document.createElement('input');
+        checkBoxP.setAttribute('type', 'checkbox');
+        checkBoxP.addEventListener('click', this.markAsDone);
+        this.checkBox = checkBoxP;
         if (this._isDone) {
             console.log('isdone');
-            checkBox.setAttribute('checked', 'true');
+            checkBoxP.setAttribute('checked', 'true');
         }
-        this.checkBox = checkBox;
-        newElement.appendChild(checkBox);
+        newElement.appendChild(checkBoxP);
         var removeButton = document.createElement('button');
         var removeFun = getRemoveTask(this);
         removeButton.innerHTML = 'Usun';
@@ -47,11 +50,14 @@ var TaskList = (function () {
         var newTask = new Task(newTaskText);
         this._tasks.push(newTask);
         this._element.appendChild(newTask.getHtml());
+        console.log('dodano zadanie: ', this._tasks);
+        this.updateHtmlElement();
         return newTask;
     };
     TaskList.prototype.removeTask = function (taskToRemove) {
         var i = this._tasks.indexOf(taskToRemove);
         this._tasks.splice(i, 1);
+        console.log('Usunieto zadanie: ', this._tasks);
         this.updateHtmlElement();
     };
     TaskList.prototype.getElement = function () {
@@ -60,9 +66,11 @@ var TaskList = (function () {
     TaskList.prototype.search = function (query) {
         var foundTasks = [];
         for (var i = 0; i < this._tasks.length; i++) {
-            var task = this._tasks[i];
-            if (task.getText().indexOf(query) !== -1) {
-                foundTasks.push(task);
+            if (query == '') {
+                foundTasks.push(this._tasks[i]);
+            }
+            else if (this._tasks[i].getText().indexOf(query) !== -1) {
+                foundTasks.push(this._tasks[i]);
             }
         }
         return foundTasks;
@@ -85,7 +93,9 @@ function addTask() {
     var nameinput = document.getElementById('taskNameInput');
     taskList.addTask(nameinput.value);
     var list = document.getElementById('tasksList');
-    list.removeChild(list.firstChild);
+    if (list.firstChild != undefined) {
+        list.removeChild(list.firstChild);
+    }
     list.appendChild(taskList.getElement());
 }
 function getRemoveTask(task) {
@@ -101,20 +111,18 @@ function getRemoveTask(task) {
 function search() {
     var queryInput = document.getElementById('searchInput');
     var query = queryInput.value;
-    if (query !== '') {
-        var results = taskList.search(query);
-        var resultList = document.createElement('ul');
-        console.log('Mam rezultatow:', results.length);
-        for (var i = 0; i < results.length; i++) {
-            resultList.appendChild(results[i].getHtml());
-        }
-        var list = document.getElementById('tasksList');
-        list.removeChild(list.firstChild);
-        list.appendChild(resultList);
+    var results = taskList.search(query);
+    var resultList = document.createElement('ol');
+    console.log('Mam rezultatow:', results.length);
+    for (var i = 0; i < results.length; i++) {
+        var li = document.createElement('li');
+        console.log(results[i]._isDone, ' ', results[i].pomoc);
+        li.innerHTML = results[i].getText();
+        resultList.appendChild(li);
     }
-    else {
-        var list = document.getElementById('tasksList');
+    var list = document.getElementById('searchTasksList');
+    if (list.firstChild != undefined) {
         list.removeChild(list.firstChild);
-        list.appendChild(taskList.getElement());
     }
+    list.appendChild(resultList);
 }
