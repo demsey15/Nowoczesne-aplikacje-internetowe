@@ -1,0 +1,12 @@
+<div class='koszyk'>
+<h2>Koszyk</h2>
+<table>
+   <tr *ngFor="let movieFor of borrowedMovies">
+       <td>{{movieFor.name}}</td>
+       <td>{{movieFor.fee}}</td>  
+       <td><button (click)=removeMovieFromCart(movieFor)>Usuń</button></td>
+    </tr>
+</table>
+<div class=sum>Suma: {{sum}}</div>
+
+</div>

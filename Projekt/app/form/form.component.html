@@ -1,0 +1,37 @@
+<div class='koszyk'>
+    <h2>Koszyk</h2>
+<table>
+   <tr *ngFor="let movieFor of moviesInCart">
+       <td>{{movieFor.name}}</td>
+       <td>{{movieFor.fee}}</td>  
+      
+    </tr>
+   
+</table>
+
+  <div class=sum>Suma: {{sum}}</div>
+
+</div>
+
+  
+  <br><br>  
+  <br><br>
+
+<form class='myForm' (ng-submit)="postOrder()">
+    Imię:<br>
+     <input type="text" name="firstName" [(ngModel)]="borrowModel.form.firstName" required/>
+  <br>
+  Nazwisko:<br>
+  <input type="text" name="lastname" [(ngModel)]="borrowModel.form.lastName" required>
+  <br>
+  Numer telefonu:<br>
+  <input type="text" name="number" [(ngModel)]="borrowModel.form.phone" required pattern="^[0-9]{9}|[0-9]{10}$"
+  title="9 lub 10 cyfr."/>
+  <br>
+  
+  <br><br>
+
+  <button type="submit" value="Zatwierdź" id="submit" (click)="postOrder()">Zatwierdź</button>
+</form>
+
+<a href="http://localhost:3000/list">Cofnij</a>
